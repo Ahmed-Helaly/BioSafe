@@ -1,0 +1,656 @@
+/* =============================================
+   bioSafe — Unified Health Record
+   CSS matching the bioSafe logo identity
+   ============================================= */
+
+/* ---------- CSS Variables ---------- */
+:root {
+    --primary:      #1b3a5c;   /* deep navy from logo text & left heart */
+    --primary-light:#2a5580;
+    --secondary:    #1a9e8f;   /* teal from logo text & right heart */
+    --secondary-light:#22c4b2;
+    --accent:       #22b8a8;   /* vibrant teal for highlights */
+    --bg:           #f6f9fc;
+    --bg-alt:       #eef4f8;
+    --white:        #ffffff;
+    --text:         #1e293b;
+    --text-light:   #64748b;
+    --border:       #dbe4ee;
+    --shadow-sm:    0 2px 8px rgba(27, 58, 92, 0.06);
+    --shadow-md:    0 8px 30px rgba(27, 58, 92, 0.10);
+    --shadow-lg:    0 20px 60px rgba(27, 58, 92, 0.16);
+    --radius:       14px;
+    --radius-lg:    22px;
+    --transition:   0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ---------- Reset & Base ---------- */
+*,
+*::before,
+*::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+}
+
+/* =============================================
+   HEADER
+   ============================================= */
+header {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(255, 255, 255, 0.82);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--border);
+    transition: box-shadow var(--transition);
+}
+
+header:hover {
+    box-shadow: var(--shadow-sm);
+}
+
+.nav-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    /* Reduced padding to make header slightly more compact */
+    padding: 0.7rem 2rem; 
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+/* ---------- Logo ---------- */
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    font-weight: 800;
+    font-size: 1.35rem;
+    color: var(--primary);
+    letter-spacing: -0.02em;
+    transition: transform var(--transition);
+}
+
+.logo:hover {
+    transform: scale(1.03);
+}
+
+.logo img {
+    width: 38px;
+    height: 38px;
+    object-fit: contain;
+}
+
+.logo span {
+    background: linear-gradient(135deg, var(--primary) 0%, var(--primary) 48%, var(--secondary) 52%, var(--secondary) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+/* ---------- Nav Links ---------- */
+.nav-links {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+.btn-login-nav {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    padding: 0.55rem 1.4rem;
+    font-size: 0.9rem;
+    font-weight: 700;
+    font-family: inherit;
+    color: var(--white);
+    background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+    border-radius: 50px;
+    transition: all var(--transition);
+    box-shadow: 0 4px 14px rgba(26, 158, 143, 0.25);
+}
+
+.btn-login-nav:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(26, 158, 143, 0.35);
+}
+
+.btn-login-nav:active {
+    transform: translateY(0);
+}
+
+/* =============================================
+   HERO SECTION
+   ============================================= */
+.hero {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    /* Reduced top padding from 5rem to 2rem to close the gap with the header */
+    padding: 2rem 2rem 6rem; 
+    position: relative;
+    overflow: hidden;
+    background: linear-gradient(160deg, var(--bg) 0%, var(--bg-alt) 60%, #e4f0f5 100%);
+}
+
+/* Decorative gradient orbs echoing the logo */
+.hero::before,
+.hero::after {
+    content: '';
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(100px);
+    opacity: 0.35;
+    pointer-events: none;
+}
+
+.hero::before {
+    width: 500px;
+    height: 500px;
+    background: radial-gradient(circle, var(--secondary-light), transparent 70%);
+    top: -180px;
+    right: -120px;
+}
+
+.hero::after {
+    width: 420px;
+    height: 420px;
+    background: radial-gradient(circle, #3b7dd8, transparent 70%);
+    bottom: -160px;
+    left: -100px;
+    opacity: 0.2;
+}
+
+.hero-content {
+    max-width: 720px;
+    text-align: center;
+    position: relative;
+    z-index: 1;
+    animation: fadeUp 0.8s ease-out both;
+}
+
+@keyframes fadeUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ---------- Hero Badge ---------- */
+.hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.45rem 1.1rem;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--secondary);
+    background: rgba(26, 158, 143, 0.10);
+    border: 1px solid rgba(26, 158, 143, 0.22);
+    border-radius: 50px;
+    margin-bottom: 1.6rem;
+    letter-spacing: 0.02em;
+}
+
+.hero-badge i {
+    font-size: 0.75rem;
+}
+
+/* ---------- Hero Heading ---------- */
+.hero h1 {
+    font-size: clamp(2.2rem, 5vw, 3.4rem);
+    font-weight: 800;
+    line-height: 1.15;
+    letter-spacing: -0.03em;
+    color: var(--primary);
+    margin-bottom: 1.4rem;
+}
+
+.hero h1 span {
+    background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+/* ---------- Hero Paragraph ---------- */
+.hero p {
+    font-size: 1.05rem;
+    font-weight: 400;
+    color: var(--text-light);
+    max-width: 600px;
+    margin: 0 auto 2.2rem;
+    line-height: 1.75;
+}
+
+.hero p strong {
+    color: var(--primary);
+    font-weight: 700;
+}
+
+/* ---------- Hero Buttons ---------- */
+.hero-buttons {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+/* ---------- Button Base ---------- */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.55rem;
+    padding: 0.85rem 2rem;
+    font-size: 1rem;
+    font-weight: 700;
+    font-family: inherit;
+    border: none;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: all var(--transition);
+    letter-spacing: 0.01em;
+    line-height: 1.2;
+}
+
+.btn i {
+    font-size: 0.95em;
+}
+
+/* ---------- Primary Button ---------- */
+.btn-primary {
+    color: var(--white);
+    background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+    box-shadow: 0 6px 20px rgba(26, 158, 143, 0.3);
+}
+
+.btn-primary:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 32px rgba(26, 158, 143, 0.4);
+}
+
+.btn-primary:active {
+    transform: translateY(-1px);
+}
+
+/* ---------- Outline Button ---------- */
+.btn-outline {
+    color: var(--primary);
+    background: transparent;
+    border: 2px solid var(--border);
+}
+
+.btn-outline:hover {
+    border-color: var(--secondary);
+    color: var(--secondary);
+    background: rgba(26, 158, 143, 0.05);
+    transform: translateY(-3px);
+}
+
+/* =============================================
+   LOGIN MODAL
+   ============================================= */
+.modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    background: rgba(15, 30, 50, 0.55);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    align-items: center;
+    justify-content: center;
+    padding: 1.5rem;
+    animation: overlayIn 0.25s ease-out;
+}
+
+.modal-overlay[style*="flex"] {
+    display: flex;
+}
+
+@keyframes overlayIn {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+}
+
+/* ---------- Modal Content ---------- */
+.modal-content {
+    background: var(--white);
+    border-radius: var(--radius-lg);
+    padding: 2.5rem 2rem 2rem;
+    width: 100%;
+    max-width: 420px;
+    position: relative;
+    box-shadow: var(--shadow-lg);
+    animation: modalSlideIn 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+    max-height: 90vh;
+    overflow-y: auto;
+}
+
+@keyframes modalSlideIn {
+    from {
+        opacity: 0;
+        transform: translateY(24px) scale(0.97);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+/* ---------- Close Button ---------- */
+.close-modal {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    background: var(--bg-alt);
+    border-radius: 50%;
+    color: var(--text-light);
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all var(--transition);
+}
+
+.close-modal:hover {
+    background: #fee2e2;
+    color: #dc2626;
+    transform: rotate(90deg);
+}
+
+/* ---------- Modal Header ---------- */
+.modal-header {
+    text-align: center;
+    margin-bottom: 1.8rem;
+}
+
+.modal-header h3 {
+    font-size: 1.4rem;
+    font-weight: 800;
+    color: var(--primary);
+    margin-bottom: 0.35rem;
+    letter-spacing: -0.02em;
+}
+
+.modal-header p {
+    font-size: 0.85rem;
+    color: var(--text-light);
+    line-height: 1.5;
+}
+
+/* ---------- Input Groups ---------- */
+.input-group {
+    margin-bottom: 1.2rem;
+}
+
+.input-group label {
+    display: block;
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: var(--primary);
+    margin-bottom: 0.4rem;
+    letter-spacing: 0.02em;
+}
+
+.input-group input {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    font-size: 0.92rem;
+    font-family: inherit;
+    color: var(--text);
+    background: var(--bg);
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius);
+    outline: none;
+    transition: all var(--transition);
+}
+
+.input-group input::placeholder {
+    color: #a0aec0;
+    font-weight: 400;
+}
+
+.input-group input:focus {
+    border-color: var(--secondary);
+    background: var(--white);
+    box-shadow: 0 0 0 4px rgba(26, 158, 143, 0.12);
+}
+
+.input-group input:invalid:not(:placeholder-shown) {
+    border-color: #f87171;
+}
+
+/* ---------- Divider ---------- */
+.divider {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin: 1.6rem 0;
+}
+
+.divider::before,
+.divider::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+}
+
+.divider span {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--text-light);
+    white-space: nowrap;
+    letter-spacing: 0.02em;
+}
+
+/* ---------- Biometrics Grid ---------- */
+.biometrics-grid {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    margin-bottom: 1.6rem;
+}
+
+.bio-btn {
+    width: 64px;
+    height: 64px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    color: var(--secondary);
+    background: var(--bg);
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius);
+    cursor: pointer;
+    transition: all var(--transition);
+}
+
+.bio-btn:hover {
+    border-color: var(--secondary);
+    background: rgba(26, 158, 143, 0.07);
+    transform: translateY(-3px);
+    box-shadow: 0 6px 16px rgba(26, 158, 143, 0.15);
+}
+
+.bio-btn:active {
+    transform: translateY(-1px) scale(0.97);
+}
+
+/* ---------- Submit Button ---------- */
+.btn-submit {
+    width: 100%;
+    padding: 0.85rem 1.5rem;
+    font-size: 1rem;
+    font-weight: 700;
+    font-family: inherit;
+    color: var(--white);
+    background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+    border: none;
+    border-radius: var(--radius);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.55rem;
+    transition: all var(--transition);
+    letter-spacing: 0.02em;
+}
+
+.btn-submit:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(26, 158, 143, 0.35);
+}
+
+.btn-submit:active:not(:disabled) {
+    transform: translateY(0);
+}
+
+.btn-submit:disabled {
+    cursor: not-allowed;
+    opacity: 0.75;
+}
+
+/* =============================================
+   FOOTER
+   ============================================= */
+footer {
+    background: var(--white);
+    border-top: 1px solid var(--border);
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.6rem;
+    text-align: center;
+}
+
+footer .logo {
+    justify-content: center;
+}
+
+footer p {
+    font-size: 0.82rem;
+    color: var(--text-light);
+    font-weight: 400;
+}
+
+/* =============================================
+   RESPONSIVE DESIGN
+   ============================================= */
+
+/* ---------- Tablets & small screens ---------- */
+@media (max-width: 768px) {
+    .nav-container {
+        padding: 0.6rem 1.25rem;
+    }
+
+    .logo {
+        font-size: 1.15rem;
+    }
+
+    .logo img {
+        width: 32px;
+        height: 32px;
+    }
+
+    .hero {
+        /* Reduced top padding for mobile as well to keep spacing tight */
+        padding: 1.5rem 1.25rem 4.5rem; 
+    }
+
+    .hero h1 {
+        font-size: clamp(1.8rem, 6vw, 2.6rem);
+    }
+
+    .hero p {
+        font-size: 0.95rem;
+    }
+
+    .hero-buttons {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .btn {
+        width: 100%;
+        max-width: 300px;
+    }
+
+    .modal-content {
+        padding: 2rem 1.5rem 1.5rem;
+        max-width: 100%;
+    }
+}
+
+/* ---------- Very small screens ---------- */
+@media (max-width: 400px) {
+    .hero-badge {
+        font-size: 0.72rem;
+        padding: 0.35rem 0.85rem;
+    }
+
+    .bio-btn {
+        width: 54px;
+        height: 54px;
+        font-size: 1.25rem;
+    }
+
+    .modal-header h3 {
+        font-size: 1.2rem;
+    }
+}
+
+/* =============================================
+   ACCESSIBILITY — Reduced Motion
+   ============================================= */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}

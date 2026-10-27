@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>bioSafe | Doctor Portal</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .page-wrap { max-width: 1000px; margin: 2rem auto 4rem; padding: 0 1.5rem; }
+        .login-card {
+            background: var(--white); border-radius: var(--radius-lg); padding: 2.5rem 2rem;
+            box-shadow: var(--shadow-lg); max-width: 420px; margin: 3rem auto; border: 1px solid var(--border);
+        }
+        .dashboard { display: none; }
+        .dashboard.active { display: block; animation: fadeUp .4s ease; }
+        .profile-card {
+            background: linear-gradient(135deg, var(--secondary), var(--primary));
+            color: #fff; border-radius: var(--radius-lg); padding: 2rem; margin-bottom: 2rem;
+            box-shadow: var(--shadow-md);
+        }
+        .profile-card h2 { font-size: 1.6rem; margin-bottom: .3rem; }
+        .profile-card .meta { display: flex; gap: 1.5rem; flex-wrap: wrap; margin-top: 1rem; font-size: .9rem; opacity: .92; }
+
+        /* Tabs Styling */
+        .tabs { display: flex; gap: .5rem; margin-bottom: 1.5rem; border-bottom: 2px solid var(--border); }
+        .tab-btn {
+            padding: .8rem 1.4rem; border: none; background: none; cursor: pointer;
+            font-family: inherit; font-weight: 700; color: var(--text-light);
+            border-bottom: 3px solid transparent; margin-bottom: -2px; transition: all .3s;
+        }
+        .tab-btn.active { color: var(--primary); border-bottom-color: var(--secondary); }
+        .tab-panel { display: none; }
+        .tab-panel.active { display: block; animation: fadeUp .4s ease; }
+
+        .card {
+            background: var(--white); border-radius: var(--radius-lg); padding: 2rem;
+            box-shadow: var(--shadow-md); border: 1px solid var(--border); margin-bottom: 1.5rem;
+        }
+        .card h3 { color: var(--primary); font-weight: 800; margin-bottom: 1rem; font-size: 1.2rem; }
+        .search-row { display: flex; gap: .7rem; flex-wrap: wrap; }
+        .search-row input { flex: 1; min-width: 200px; padding: .75rem 1rem; border: 1.5px solid var(--border); border-radius: var(--radius); font-family: inherit; background: var(--bg); outline: none; }
+        .search-row input:focus { border-color: var(--secondary); background: #fff; }
+        .search-row button { padding: .75rem 1.5rem; background: linear-gradient(135deg, var(--primary), var(--secondary)); color: #fff; border: none; border-radius: var(--radius); font-family: inherit; font-weight: 700; cursor: pointer; }
+        .search-row button:hover { opacity: .9; }
+        .patient-info {
+            background: var(--bg-alt); border-radius: var(--radius); padding: 1rem 1.2rem;
+            margin-top: 1rem; display: none; border-left: 4px solid var(--secondary);
+        }
+        .patient-info.show { display: block; }
+        .patient-info .name { font-weight: 800; color: var(--primary); font-size: 1.1rem; }
+        .patient-info .detail { font-size: .88rem; color: var(--text-light); margin-top: .2rem; }
+
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+        @media (max-width: 640px) { .grid-2 { grid-template-columns: 1fr; } }
+
+        textarea { width: 100%; padding: .75rem 1rem; border: 1.5px solid var(--border); border-radius: var(--radius); font-family: inherit; background: var(--bg); outline: none; resize: vertical; min-height: 80px; }
+        textarea:focus { border-color: var(--secondary); background: #fff; }
+        select { width:100%; padding:.75rem 1rem; border:1.5px solid var(--border); border-radius:var(--radius); font-family:inherit; background:var(--bg); outline:none; }
+        select:focus { border-color: var(--secondary); background: #fff; }
+
+        .form-msg { margin-top: 1rem; padding: .8rem 1rem; border-radius: var(--radius); font-weight: 600; display: none; }
+        .form-msg.ok { display: block; background: #dcfce7; color: #166534; }
+        .form-msg.err { display: block; background: #fee2e2; color: #991b1b; }
+        .record-card {
+            background: var(--white); border-radius: var(--radius); padding: 1.2rem 1.5rem;
+            box-shadow: var(--shadow-sm); border: 1px solid var(--border); margin-bottom: .8rem;
+            border-left: 4px solid var(--secondary);
+        }
+        .record-card .record-head { display: flex; justify-content: space-between; flex-wrap: wrap; gap: .5rem; margin-bottom: .5rem; }
+        .record-card .diagnosis { font-weight: 800; color: var(--primary); }
+        .record-card .date { font-size: .82rem; color: var(--text-light); background: var(--bg-alt); padding: .2rem .7rem; border-radius: 50px; }
+        .record-card .field { font-size: .88rem; margin: .3rem 0; }
+        .record-card .field strong { color: var(--primary); }
+        .logout-btn { background: var(--bg-alt); color: var(--primary); border: 1px solid var(--border); padding: .5rem 1.1rem; border-radius: 50px; font-family: inherit; font-weight: 700; cursor: pointer; font-size: .85rem; }
+        .logout-btn:hover { background: #fee2e2; color: #991b1b; border-color: #fecaca; }
+        .section-title { font-size: 1.3rem; font-weight: 800; color: var(--primary); margin-bottom: 1rem; margin-top: 2rem; }
+
+        /* Fingerprint button */
+        .btn-scan {
+            display: inline-flex; align-items: center; justify-content: center; gap: .5rem;
+            padding: .7rem 1.4rem; font-family: inherit; font-weight: 700; font-size: .9rem;
+            color: #fff; border: none; border-radius: var(--radius); cursor: pointer;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            transition: all .3s;
+        }
+        .btn-scan:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 6px 18px rgba(26,158,143,.3); }
+        .btn-scan:disabled { opacity: .6; cursor: not-allowed; }
+        .btn-scan.scanned { background: linear-gradient(135deg, #166534, #22c55e); }
+        .scan-row { display: flex; gap: .7rem; align-items: center; flex-wrap: wrap; }
+        .scan-status { font-size: .82rem; color: var(--text-light); }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="nav-container">
+            <a href="index.html" class="logo"><img src="Icon.png" alt="bioSafe icon"><span>BioSafe</span></a>
+            <nav class="nav-links">
+                <button class="logout-btn" id="logoutBtn" style="display:none;" onclick="logout()"><i class="fa-solid fa-right-from-bracket"></i> Logout</button>
+                <a href="index.html" class="btn-login-nav"><i class="fa-solid fa-house"></i> Home</a>
+            </nav>
+        </div>
+    </header>
+
+    <div class="page-wrap">
+
+        <!-- Login view -->
+        <div id="loginView">
+            <div class="login-card">
+                <div style="text-align:center;margin-bottom:1.5rem;">
+                    <div style="width:70px;height:70px;margin:0 auto 1rem;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,var(--secondary),var(--primary));border-radius:50%;color:#fff;font-size:1.8rem;">
+                        <i class="fa-solid fa-user-doctor"></i>
+                    </div>
+                    <h3 style="font-size:1.4rem;font-weight:800;color:var(--primary);">Doctor Login</h3>
+                    <p style="color:var(--text-light);font-size:.88rem;">Access patient records and add diagnoses</p>
+                </div>
+                <form id="loginForm">
+                    <div class="input-group">
+                        <label for="nationalId">National ID</label>
+                        <input type="text" id="nationalId" pattern="\d{14}" maxlength="14" required placeholder="14-digit ID">
+                    </div>
+                    <div class="input-group">
+                        <label for="password">Password</label>
+                        <input type="password" id="password" minlength="6" required placeholder="Your password">
+                    </div>
+                    <button type="submit" class="btn-submit"><i class="fa-solid fa-right-to-bracket"></i> Log In</button>
+                    <div class="form-msg" id="loginMsg"></div>
+                </form>
+
+                <div class="divider"><span>or</span></div>
+
+                <button type="button" id="bioLoginBtn" class="btn-scan" style="width:100%;">
+                    <i class="fa-solid fa-fingerprint"></i> Login with Fingerprint
+                </button>
+                <div id="bioLoginMsg" style="font-size:.82rem;margin-top:.6rem;text-align:center;color:var(--text-light);"></div>
+            </div>
+        </div>
+
+        <!-- Dashboard view -->
+        <div class="dashboard" id="dashboardView">
+            <div class="profile-card">
+                <h2 id="docName">—</h2>
+                <div class="meta">
+                    <span><i class="fa-solid fa-stethoscope"></i> <span id="docSpec">—</span></span>
+                    <span><i class="fa-solid fa-hospital"></i> <span id="docHospital">—</span></span>
+                    <span><i class="fa-solid fa-id-card"></i> <span id="docId">—</span></span>
+                </div>
+            </div>
+
+            <!-- Tabs Navigation -->
+            <div class="tabs">
+                <button class="tab-btn active" data-tab="records"><i class="fa-solid fa-file-medical"></i> Medical Records</button>
+                <button class="tab-btn" data-tab="add-patient"><i class="fa-solid fa-user-plus"></i> Add New Patient</button>
+            </div>
+
+            <!-- TAB: Medical Records -->
+            <div class="tab-panel active" id="tab-records">
+                <!-- Add record -->
+                <div class="card">
+                    <h3><i class="fa-solid fa-plus-circle"></i> Add Medical Record</h3>
+                    <div class="search-row">
+                        <input type="text" id="searchNationalId" placeholder="Enter patient National ID (14 digits)" maxlength="14">
+                        <button onclick="searchPatient()"><i class="fa-solid fa-magnifying-glass"></i> Search Patient</button>
+                    </div>
+                    <div class="patient-info" id="patientInfo">
+                        <div class="name" id="patName">—</div>
+                        <div class="detail" id="patDetail">—</div>
+                    </div>
+
+                    <form id="recordForm" style="margin-top:1.2rem; display:none;">
+                        <div class="grid-2">
+                            <div class="input-group">
+                                <label>Diagnosis *</label>
+                                <input type="text" id="rDiagnosis" required placeholder="e.g. Hypertension">
+                            </div>
+                            <div class="input-group">
+                                <label>Visit Date</label>
+                                <input type="date" id="rVisitDate">
+                            </div>
+                            <div class="input-group">
+                                <label>Treatment</label>
+                                <input type="text" id="rTreatment" placeholder="Treatment plan">
+                            </div>
+                            <div class="input-group">
+                                <label>Medications</label>
+                                <input type="text" id="rMedications" placeholder="Prescribed meds">
+                            </div>
+                        </div>
+                        <div class="input-group">
+                            <label>Notes</label>
+                            <textarea id="rNotes" placeholder="Additional clinical notes..."></textarea>
+                        </div>
+                        <button type="submit" class="btn-submit"><i class="fa-solid fa-floppy-disk"></i> Save Record</button>
+                        <div class="form-msg" id="recordMsg"></div>
+                    </form>
+                </div>
+
+                <!-- My records -->
+                <h3 class="section-title"><i class="fa-solid fa-clipboard-list"></i> Records I Created</h3>
+                <div id="doctorRecords"><p style="color:var(--text-light);">Loading...</p></div>
+            </div>
+
+            <!-- TAB: Add Patient -->
+            <div class="tab-panel" id="tab-add-patient">
+                <div class="card">
+                    <h3><i class="fa-solid fa-user-plus"></i> Register New Patient</h3>
+                    <form id="newPatientForm">
+                        <div class="grid-2">
+                            <div class="input-group">
+                                <label>National ID (14 digits)</label>
+                                <input type="text" id="pNationalId" pattern="\d{14}" maxlength="14" required placeholder="14-digit ID">
+                            </div>
+                            <div class="input-group">
+                                <label>Password</label>
+                                <input type="password" id="pPassword" minlength="6" required placeholder="Min 6 characters">
+                            </div>
+                            <div class="input-group">
+                                <label>Full Name</label>
+                                <input type="text" id="pFullName" required placeholder="Patient full name">
+                            </div>
+                            <div class="input-group">
+                                <label>Email</label>
+                                <input type="email" id="pEmail" placeholder="patient@email.com">
+                            </div>
+                            <div class="input-group">
+                                <label>Phone</label>
+                                <input type="text" id="pPhone" placeholder="+20 ...">
+                            </div>
+                            <div class="input-group">
+                                <label>Blood Type</label>
+                                <select id="pBloodType">
+                                    <option value="">Select</option>
+                                    <option>A+</option><option>A-</option><option>B+</option><option>B-</option>
+                                    <option>AB+</option><option>AB-</option><option>O+</option><option>O-</option>
+                                </select>
+                            </div>
+                            <div class="input-group">
+                                <label>Date of Birth</label>
+                                <input type="date" id="pDOB">
+                            </div>
+                            <div class="input-group">
+                                <label>Address</label>
+                                <input type="text" id="pAddress" placeholder="City / area">
+                            </div>
+                        </div>
+                        <div class="input-group">
+                            <label><i class="fa-solid fa-fingerprint"></i> Patient Fingerprint (required)</label>
+                            <div class="scan-row">
+                                <button type="button" id="pScanBtn" class="btn-scan">
+                                    <i class="fa-solid fa-fingerprint"></i> Scan Fingerprint
+                                </button>
+                                <span id="pScanStatus" class="scan-status">Not scanned</span>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn-submit"><i class="fa-solid fa-plus"></i> Add Patient</button>
+                        <div class="form-msg" id="patientMsg"></div>
+                    </form>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script src="biometric.js"></script>
+    <script>
+        const API = 'http://localhost:3000';
+        let currentDoctor = null;
+        let currentPatient = null;
+        let pCredentialId = null;
+
+        // Login (password)
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const msg = document.getElementById('loginMsg');
+            const body = {
+                nationalId: document.getElementById('nationalId').value.trim(),
+                password:   document.getElementById('password').value
+            };
+            try {
+                const res = await fetch(API + '/api/doctor/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(body)
+                });
+                const data = await res.json();
+                if (!res.ok) { msg.className = 'form-msg err'; msg.textContent = '❌ ' + (data.error || 'Login failed'); return; }
+                msg.className = 'form-msg'; msg.style.display = 'none';
+                currentDoctor = data.doctor;
+                showDashboard();
+            } catch (err) {
+                msg.className = 'form-msg err'; msg.textContent = '❌ Server unreachable';
+            }
+        });
+
+        // Login (fingerprint)
+        document.getElementById('bioLoginBtn').addEventListener('click', async () => {
+            const msgEl = document.getElementById('bioLoginMsg');
+            const btn = document.getElementById('bioLoginBtn');
+            btn.disabled = true;
+            msgEl.textContent = 'Waiting for fingerprint...';
+            msgEl.style.color = 'var(--secondary)';
+
+            let credId = BioAuth.recall('doctor');
+            if (!credId) {
+                msgEl.textContent = 'No saved fingerprint on this device. Place finger to identify.';
+                const scan = await BioAuth.register({ kind: 'fingerprint' });
+                if (!scan.ok || !scan.credential) {
+                    btn.disabled = false;
+                    msgEl.textContent = '❌ Fingerprint scan failed';
+                    msgEl.style.color = '#991b1b';
+                    return;
+                }
+                credId = scan.credential.credentialId;
+            }
+
+            const verify = await BioAuth.authenticate({ credentialId: credId });
+            if (!verify.ok) {
+                btn.disabled = false;
+                msgEl.textContent = '❌ ' + (verify.error || 'Fingerprint not recognized');
+                msgEl.style.color = '#991b1b';
+                return;
+            }
+
+            try {
+                const res = await fetch(API + '/api/doctor/login-biometric', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ credentialId: verify.credentialId })
+                });
+                const data = await res.json();
+                if (!res.ok) {
+                    btn.disabled = false;
+                    msgEl.textContent = '❌ ' + (data.error || 'Login failed');
+                    msgEl.style.color = '#991b1b';
+                    return;
+                }
+                BioAuth.remember('doctor', verify.credentialId);
+                currentDoctor = data.doctor;
+                showDashboard();
+            } catch (err) {
+                btn.disabled = false;
+                msgEl.textContent = '❌ Server unreachable';
+                msgEl.style.color = '#991b1b';
+            }
+        });
+
+        function showDashboard() {
+            document.getElementById('loginView').style.display = 'none';
+            document.getElementById('dashboardView').classList.add('active');
+            document.getElementById('logoutBtn').style.display = 'inline-flex';
+
+            document.getElementById('docName').textContent     = currentDoctor.fullName || '—';
+            document.getElementById('docSpec').textContent     = currentDoctor.specialization || '—';
+            document.getElementById('docHospital').textContent = currentDoctor.hospital || '—';
+            document.getElementById('docId').textContent       = currentDoctor.nationalId || '—';
+
+            loadDoctorRecords();
+        }
+
+        // Tabs Logic
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+                document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+                btn.classList.add('active');
+                document.getElementById('tab-' + btn.dataset.tab).classList.add('active');
+            });
+        });
+
+        // Fingerprint scan for new patient
+        document.getElementById('pScanBtn').addEventListener('click', async () => {
+            const btn = document.getElementById('pScanBtn');
+            const status = document.getElementById('pScanStatus');
+            btn.disabled = true;
+            status.textContent = 'Scanning... place finger on sensor';
+            status.style.color = 'var(--secondary)';
+            try {
+                const result = await BioAuth.register({ kind: 'fingerprint' });
+                if (result.ok && result.credential) {
+                    pCredentialId = result.credential.credentialId;
+                    btn.classList.add('scanned');
+                    btn.innerHTML = '<i class="fa-solid fa-check"></i> Fingerprint Scanned';
+                    status.textContent = result.simulated ? '✔ Simulated scan stored' : '✔ Fingerprint stored';
+                    status.style.color = '#166534';
+                } else {
+                    throw new Error(result.error || 'Scan failed');
+                }
+            } catch (err) {
+                btn.disabled = false;
+                status.textContent = '❌ Scan failed — try again';
+                status.style.color = '#991b1b';
+            }
+        });
+
+        function resetScan() {
+            const btn = document.getElementById('pScanBtn');
+            const status = document.getElementById('pScanStatus');
+            btn.classList.remove('scanned');
+            btn.disabled = false;
+            btn.innerHTML = '<i class="fa-solid fa-fingerprint"></i> Scan Fingerprint';
+            status.textContent = 'Not scanned';
+            status.style.color = 'var(--text-light)';
+            pCredentialId = null;
+        }
+
+        // Search Patient (for records)
+        async function searchPatient() {
+            const id = document.getElementById('searchNationalId').value.trim();
+            const info = document.getElementById('patientInfo');
+            const form = document.getElementById('recordForm');
+            if (!id) return;
+
+            try {
+                const res = await fetch(API + '/api/doctor/patient/' + id);
+                const data = await res.json();
+                if (!res.ok) {
+                    info.classList.remove('show');
+                    form.style.display = 'none';
+                    alert('❌ Patient not found');
+                    currentPatient = null;
+                    return;
+                }
+                currentPatient = data;
+                document.getElementById('patName').textContent = data.fullName;
+                document.getElementById('patDetail').textContent =
+                    `ID: ${data.nationalId} | Blood: ${data.bloodType || '—'} | DOB: ${data.dateOfBirth || '—'} | ${data.email || ''}`;
+                info.classList.add('show');
+                form.style.display = 'block';
+            } catch (err) {
+                alert('❌ Server unreachable');
+            }
+        }
+
+        // Save Medical Record
+        document.getElementById('recordForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            if (!currentPatient) return;
+            const msg = document.getElementById('recordMsg');
+            const body = {
+                patientNationalId: currentPatient.nationalId,
+                doctorNationalId:  currentDoctor.nationalId,
+                doctorName:        currentDoctor.fullName,
+                hospital:          currentDoctor.hospital,
+                diagnosis:         document.getElementById('rDiagnosis').value.trim(),
+                treatment:         document.getElementById('rTreatment').value.trim(),
+                medications:       document.getElementById('rMedications').value.trim(),
+                notes:             document.getElementById('rNotes').value.trim(),
+                visitDate:         document.getElementById('rVisitDate').value || new Date().toISOString()
+            };
+            try {
+                const res = await fetch(API + '/api/doctor/records', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(body)
+                });
+                const data = await res.json();
+                if (res.ok) {
+                    msg.className = 'form-msg ok'; msg.textContent = '✅ Record saved successfully';
+                    e.target.reset();
+                    document.getElementById('patientInfo').classList.remove('show');
+                    document.getElementById('recordForm').style.display = 'none';
+                    currentPatient = null;
+                    loadDoctorRecords();
+                } else {
+                    msg.className = 'form-msg err'; msg.textContent = '❌ ' + (data.error || 'Failed');
+                }
+            } catch (err) {
+                msg.className = 'form-msg err'; msg.textContent = '❌ Server unreachable';
+            }
+        });
+
+        // Register New Patient
+        document.getElementById('newPatientForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const msg = document.getElementById('patientMsg');
+            if (!pCredentialId) {
+                msg.className = 'form-msg err';
+                msg.textContent = '❌ Please scan the patient\'s fingerprint first';
+                return;
+            }
+            const body = {
+                nationalId:  document.getElementById('pNationalId').value.trim(),
+                password:    document.getElementById('pPassword').value,
+                fullName:    document.getElementById('pFullName').value.trim(),
+                email:       document.getElementById('pEmail').value.trim(),
+                phone:       document.getElementById('pPhone').value.trim(),
+                bloodType:   document.getElementById('pBloodType').value,
+                dateOfBirth: document.getElementById('pDOB').value,
+                address:     document.getElementById('pAddress').value.trim(),
+                credentialId: pCredentialId
+            };
+            try {
+                const res = await fetch(API + '/api/doctor/register-patient', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(body)
+                });
+                const data = await res.json();
+                if (res.ok) {
+                    msg.className = 'form-msg ok';
+                    msg.textContent = '✅ ' + data.message;
+                    e.target.reset();
+                    resetScan();
+                } else {
+                    msg.className = 'form-msg err';
+                    msg.textContent = '❌ ' + (data.error || 'Failed');
+                }
+            } catch (err) {
+                msg.className = 'form-msg err';
+                msg.textContent = '❌ Server unreachable';
+            }
+        });
+
+        // Load Doctor Records
+        async function loadDoctorRecords() {
+            const div = document.getElementById('doctorRecords');
+            try {
+                const res = await fetch(API + '/api/doctor/records/' + currentDoctor.nationalId);
+                const records = await res.json();
+                if (!records.length) {
+                    div.innerHTML = '<p style="color:var(--text-light);">No records created yet.</p>';
+                    return;
+                }
+                div.innerHTML = records.map(r => `
+                    <div class="record-card">
+                        <div class="record-head">
+                            <span class="diagnosis">Patient: ${escapeHtml(r.patientNationalId)} — ${escapeHtml(r.diagnosis)}</span>
+                            <span class="date">${formatDate(r.visitDate)}</span>
+                        </div>
+                        ${r.treatment  ? `<div class="field"><strong>Treatment:</strong> ${escapeHtml(r.treatment)}</div>` : ''}
+                        ${r.medications? `<div class="field"><strong>Medications:</strong> ${escapeHtml(r.medications)}</div>` : ''}
+                        ${r.notes      ? `<div class="field"><strong>Notes:</strong> ${escapeHtml(r.notes)}</div>` : ''}
+                    </div>
+                `).join('');
+            } catch (err) {
+                div.innerHTML = '<p style="color:#991b1b;">Could not load records.</p>';
+            }
+        }
+
+        function formatDate(d) {
+            if (!d) return '—';
+            return new Date(d).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
+        }
+        function escapeHtml(s) {
+            return String(s || '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+        }
+        function logout() { location.reload(); }
+    </script>
+</body>
+</html>

@@ -4,757 +4,133 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>bioSafe | Unified Health Record</title>
-    <!-- Modern English Font -->
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700;800&display=swap" rel="stylesheet">
-    <!-- FontAwesome for Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
+    <link rel="stylesheet" href="style.css">
     <style>
-        :root {
-            --primary: #0d4f68;
-            --primary-light: #166b8c;
-            --secondary: #1a9c7b;
-            --secondary-light: #22c59c;
-            --bg: #f8fafc;
-            --text-main: #1e293b;
-            --text-muted: #64748b;
-            --white: #ffffff;
-            --danger: #ef4444;
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Plus Jakarta Sans', sans-serif;
-        }
-
-        body {
-            background-color: var(--bg);
-            color: var(--text-main);
-            overflow-x: hidden;
-        }
-
-        /* --- Header & Navigation --- */
-        header {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            position: fixed;
-            width: 100%;
-            top: 0;
-            z-index: 1000;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
-            transition: all 0.3s ease;
-        }
-
-        .nav-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 15px 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .logo {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-size: 28px;
-            font-weight: 800;
-            color: var(--primary);
-            text-decoration: none;
-        }
-
-        .logo span { color: var(--secondary); }
-
-        .nav-links {
-            display: flex;
-            gap: 30px;
-            align-items: center;
-        }
-
-        .nav-links a {
-            text-decoration: none;
-            color: var(--text-main);
-            font-weight: 600;
-            font-size: 16px;
-            transition: color 0.3s;
-            position: relative;
-        }
-
-        .nav-links a::after {
-            content: '';
-            position: absolute;
-            width: 0;
-            height: 2px;
-            bottom: -4px;
-            left: 0;
-            background-color: var(--secondary);
-            transition: width 0.3s ease;
-        }
-
-        .nav-links a:hover::after { width: 100%; }
-        .nav-links a:hover { color: var(--secondary); }
-
-        .btn-login-nav {
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            color: white !important;
-            padding: 10px 25px;
-            border-radius: 50px;
-            font-weight: 700;
-            box-shadow: 0 4px 15px rgba(26, 156, 123, 0.3);
-        }
-        .btn-login-nav::after { display: none; }
-        .btn-login-nav:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(26, 156, 123, 0.4); }
-
-        /* --- Hero Section --- */
-        .hero {
-            padding: 180px 20px 100px;
-            background: radial-gradient(circle at top left, #e0f2f1 0%, transparent 50%),
-                        radial-gradient(circle at bottom right, #e0f2fe 0%, transparent 50%);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-        }
-
-        .hero-content {
-            max-width: 800px;
-            animation: fadeUp 1s ease;
-        }
-
-        .hero-badge {
-            background: rgba(26, 156, 123, 0.1);
-            color: var(--secondary);
-            padding: 8px 16px;
-            border-radius: 50px;
-            font-weight: 700;
-            font-size: 14px;
-            display: inline-block;
-            margin-bottom: 20px;
-            border: 1px solid rgba(26, 156, 123, 0.3);
-        }
-
-        .hero h1 {
-            font-size: 52px;
-            font-weight: 800;
-            color: var(--primary);
-            line-height: 1.2;
-            margin-bottom: 20px;
-        }
-
-        .hero h1 span {
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .hero p {
-            font-size: 20px;
-            color: var(--text-muted);
-            line-height: 1.8;
-            margin-bottom: 40px;
-            max-width: 650px;
-            margin-left: auto;
-            margin-right: auto;
-        }
-
-        .hero-buttons {
-            display: flex;
-            gap: 20px;
-            justify-content: center;
-        }
-
-        .btn {
-            padding: 16px 36px;
-            border-radius: 50px;
-            font-size: 18px;
-            font-weight: 700;
-            cursor: pointer;
-            transition: all 0.3s;
-            border: none;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .btn-primary {
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            color: white;
-            box-shadow: 0 10px 25px rgba(26, 156, 123, 0.3);
-        }
-
-        .btn-primary:hover { transform: translateY(-3px); box-shadow: 0 15px 30px rgba(26, 156, 123, 0.4); }
-
-        .btn-outline {
-            background: transparent;
-            color: var(--primary);
-            border: 2px solid var(--primary);
-        }
-        .btn-outline:hover { background: var(--primary); color: white; }
-
-        /* --- Features Section --- */
-        .features {
-            padding: 100px 20px;
-            background: var(--white);
-        }
-
-        .section-title {
-            text-align: center;
-            font-size: 36px;
-            font-weight: 800;
-            color: var(--primary);
-            margin-bottom: 15px;
-        }
-
-        .section-subtitle {
-            text-align: center;
-            color: var(--text-muted);
-            font-size: 18px;
-            margin-bottom: 60px;
-        }
-
-        .grid {
-            max-width: 1200px;
-            margin: 0 auto;
+        /* أزرار اختيار نوع الحساب في الـ modal */
+        .role-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 30px;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-bottom: 1.2rem;
         }
-
-        .card {
-            background: var(--bg);
-            padding: 40px 30px;
-            border-radius: 20px;
-            transition: all 0.4s ease;
-            border: 1px solid #e2e8f0;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 4px;
-            background: linear-gradient(90deg, var(--primary), var(--secondary));
-            transform: scaleX(0);
-            transform-origin: left;
-            transition: transform 0.4s ease;
-        }
-
-        .card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 20px 40px rgba(0,0,0,0.08);
-            background: var(--white);
-        }
-
-        .card:hover::before { transform: scaleX(1); }
-
-        .card-icon {
-            width: 60px;
-            height: 60px;
-            background: rgba(26, 156, 123, 0.1);
-            color: var(--secondary);
-            border-radius: 15px;
+        .role-card {
             display: flex;
-            justify-content: center;
+            flex-direction: column;
             align-items: center;
-            font-size: 24px;
-            margin-bottom: 20px;
-        }
-
-        .card h3 {
-            font-size: 22px;
-            color: var(--primary);
-            margin-bottom: 15px;
-        }
-
-        .card p {
-            color: var(--text-muted);
-            line-height: 1.7;
-        }
-
-        /* --- Login Modal --- */
-        .modal-overlay {
-            display: none;
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(13, 79, 104, 0.8);
-            backdrop-filter: blur(8px);
-            z-index: 2000;
-            justify-content: center;
-            align-items: center;
-            animation: fadeIn 0.3s ease;
-        }
-
-        .modal-content {
-            background: var(--white);
-            width: 100%;
-            max-width: 450px;
-            border-radius: 24px;
-            padding: 40px;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
-            position: relative;
-            animation: slideUp 0.4s ease;
-        }
-
-        .close-modal {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            background: none;
-            border: none;
-            font-size: 24px;
-            color: var(--text-muted);
-            cursor: pointer;
-            transition: color 0.3s;
-        }
-        .close-modal:hover { color: var(--danger); }
-
-        .modal-header {
-            text-align: center;
-            margin-bottom: 30px;
-        }
-
-        .modal-header h3 {
-            font-size: 26px;
-            color: var(--primary);
-            margin-bottom: 10px;
-        }
-
-        .modal-header p { color: var(--text-muted); font-size: 15px; }
-
-        .input-group {
-            margin-bottom: 20px;
-            text-align: left;
-        }
-
-        .input-group label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 700;
-            color: var(--text-main);
-            font-size: 15px;
-        }
-
-        .input-group input {
-            width: 100%;
-            padding: 14px 16px;
-            border: 2px solid #e2e8f0;
-            border-radius: 12px;
-            font-size: 16px;
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            transition: all 0.3s;
+            gap: .6rem;
+            padding: 1.4rem 1rem;
+            border: 2px solid var(--border);
+            border-radius: var(--radius);
             background: var(--bg);
+            cursor: pointer;
+            transition: all var(--transition);
+            text-align: center;
+            font-family: inherit;
+            color: var(--primary);
+            font-weight: 700;
+            font-size: .92rem;
         }
-
-        .input-group input:focus {
-            outline: none;
+        .role-card i {
+            font-size: 1.8rem;
+            color: var(--secondary);
+        }
+        .role-card:hover {
             border-color: var(--secondary);
-            background: var(--white);
-            box-shadow: 0 0 0 4px rgba(26, 156, 123, 0.1);
+            background: rgba(26,158,143,.06);
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-sm);
         }
-
-        .divider {
-            display: flex;
-            align-items: center;
-            text-align: center;
-            margin: 25px 0;
-            color: var(--text-muted);
-            font-size: 14px;
-        }
-        .divider::before, .divider::after {
-            content: '';
-            flex: 1;
-            border-bottom: 1px solid #e2e8f0;
-        }
-        .divider span { padding: 0 15px; }
-
-        .biometrics-grid {
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-            margin-bottom: 30px;
-        }
-
-        .bio-btn {
-            width: 70px;
-            height: 70px;
-            border-radius: 50%;
-            border: 2px solid #e2e8f0;
-            background: var(--bg);
-            color: var(--primary);
-            font-size: 28px;
-            cursor: pointer;
-            transition: all 0.3s;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            position: relative;
-        }
-
-        .bio-btn:hover {
-            border-color: var(--secondary);
-            color: var(--secondary);
-            background: rgba(26, 156, 123, 0.05);
-            transform: scale(1.1);
-        }
-
-        .bio-btn::after {
-            content: '';
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            border-radius: 50%;
-            border: 2px solid var(--secondary);
-            opacity: 0;
-            animation: pulse 2s infinite;
-        }
-
-        .btn-submit {
-            width: 100%;
-            padding: 16px;
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            color: white;
-            border: none;
-            border-radius: 12px;
-            font-size: 18px;
-            font-weight: 700;
-            cursor: pointer;
-            transition: all 0.3s;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .btn-submit:hover { transform: translateY(-2px); box-shadow: 0 10px 20px rgba(26, 156, 123, 0.3); }
-
-        /* --- Dashboard Preview Section --- */
-        .dashboard-preview {
-            padding: 80px 20px;
-            background: var(--bg);
-            text-align: center;
-        }
-
-        .dashboard-mockup {
-            max-width: 1000px;
-            margin: 0 auto;
-            background: var(--white);
-            border-radius: 20px;
-            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.15);
-            overflow: hidden;
-            border: 1px solid #e2e8f0;
-            text-align: left;
-            position: relative;
-        }
-
-        .dash-header {
-            background: var(--primary);
-            padding: 15px 30px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            color: white;
-        }
-
-        .dash-body {
-            padding: 30px;
-            display: grid;
-            grid-template-columns: 1fr 2fr;
-            gap: 30px;
-        }
-
-        .dash-sidebar {
-            background: var(--bg);
-            border-radius: 12px;
-            padding: 20px;
-        }
-
-        .dash-sidebar ul { list-style: none; }
-        .dash-sidebar li {
-            padding: 12px 15px;
-            margin-bottom: 5px;
-            border-radius: 8px;
-            font-weight: 600;
-            color: var(--text-muted);
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-        .dash-sidebar li.active, .dash-sidebar li:hover {
-            background: var(--white);
-            color: var(--secondary);
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-        }
-
-        .dash-content h4 { color: var(--primary); margin-bottom: 20px; font-size: 22px; }
-        
-        .record-item {
-            display: flex;
-            justify-content: space-between;
-            padding: 15px;
-            border-bottom: 1px solid #e2e8f0;
-            align-items: center;
-        }
-        .record-item:last-child { border-bottom: none; }
-        .record-info h5 { color: var(--text-main); font-size: 16px; margin-bottom: 5px; }
-        .record-info p { color: var(--text-muted); font-size: 14px; }
-        .record-status {
-            background: rgba(26, 156, 123, 0.1);
-            color: var(--secondary);
-            padding: 5px 12px;
-            border-radius: 20px;
-            font-size: 13px;
-            font-weight: 700;
-        }
-
-        /* --- Footer --- */
-        footer {
-            background: var(--primary);
-            color: rgba(255,255,255,0.8);
-            padding: 50px 20px 20px;
-            text-align: center;
-        }
-        footer .logo { color: white; justify-content: center; margin-bottom: 20px; }
-        footer p { margin-bottom: 15px; }
-
-        /* --- Animations --- */
-        @keyframes fadeUp {
-            from { opacity: 0; transform: translateY(30px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-        @keyframes slideUp {
-            from { opacity: 0; transform: translateY(40px) scale(0.95); }
-            to { opacity: 1; transform: translateY(0) scale(1); }
-        }
-        @keyframes pulse {
-            0% { transform: scale(1); opacity: 0.5; }
-            100% { transform: scale(1.5); opacity: 0; }
-        }
-
-        /* Responsive */
-        @media (max-width: 768px) {
-            .hero h1 { font-size: 36px; }
-            .nav-links { display: none; }
-            .dash-body { grid-template-columns: 1fr; }
-            .record-item { flex-direction: column; align-items: flex-start; gap: 10px; }
+        .role-card small {
+            font-weight: 400;
+            font-size: .75rem;
+            color: var(--text-light);
         }
     </style>
 </head>
 <body>
 
-    <!-- Header -->
     <header>
         <div class="nav-container">
-            <a href="#" class="logo">
-                <i ></i><img src="Icon.png" height="50px"><span>BioSafe</span>
+            <a href="index.html" class="logo" aria-label="bioSafe home">
+                <img src="Icon.png" alt="bioSafe icon"><span>BioSafe</span>
             </a>
-            <div class="nav-links">
-                <a href="#features">Features</a>
-                <a href="#preview">How it Works</a>
-                <a href="#security">Security</a>
-                <a href="#" class="btn-login-nav" onclick="openModal()">Secure Login</a>
-            </div>
+            <nav class="nav-links">
+                <button class="btn-login-nav" id="openLoginBtn" style="border:none;cursor:pointer;">
+                    <i class="fa-solid fa-right-to-bracket"></i> Log In
+                </button>
+                <a href="admin.html" class="btn-login-nav" style="background:linear-gradient(135deg,#1b3a5c,#2a5580);">
+                    <i class="fa-solid fa-user-shield"></i> Admin
+                </a>
+            </nav>
         </div>
     </header>
 
-    <!-- Hero Section -->
     <section class="hero">
         <div class="hero-content">
-            <div class="hero-badge"><i class="fa-solid fa-lock"></i> Fully Encrypted & Protected</div>
+            <div class="hero-badge"><i class="fa-solid fa-lock"></i> Fully Encrypted &amp; Protected</div>
             <h1>Your Unified Health Record.<br> <span>Secured in Your Hands.</span></h1>
             <p>
                 <strong>bioSafe</strong> connects you with all public and private hospitals and clinics across the country. Your medical history, X-rays, and lab results in one place. Data can only be modified by your treating physician, and accessed only via your fingerprint, face ID, or iris scan.
             </p>
             <div class="hero-buttons">
-                <button class="btn btn-primary" onclick="openModal()">
-                    <i class="fa-solid fa-fingerprint"></i> Secure Access
+                <button class="btn btn-primary" id="heroLoginBtn">
+                    <i class="fa-solid fa-fingerprint"></i> Log In
                 </button>
-                <a href="#features" class="btn btn-outline">Learn More</a>
+                <a href="admin.html" class="btn btn-outline">
+                    <i class="fa-solid fa-user-shield"></i> Admin Panel
+                </a>
             </div>
         </div>
     </section>
 
-    <!-- Features Section -->
-    <section class="features" id="features">
-        <h2 class="section-title">Why bioSafe?</h2>
-        <p class="section-subtitle">The highest standards of security and technology for your health</p>
-        
-        <div class="grid">
-            <div class="card">
-                <div class="card-icon"><i class="fa-solid fa-network-wired"></i></div>
-                <h3>Unified Integration</h3>
-                <p>Connected to all public and private hospitals and licensed clinics nationwide, ensuring a comprehensive view of your health status anywhere.</p>
-            </div>
-            <div class="card">
-                <div class="card-icon"><i class="fa-solid fa-user-shield"></i></div>
-                <h3>Advanced Biometrics</h3>
-                <p>Log in using fingerprint, face ID, or iris scan. Your data is encrypted with world-class technology.</p>
-            </div>
-            <div class="card">
-                <div class="card-icon"><i class="fa-solid fa-user-doctor"></i></div>
-                <h3>Doctor-Only Permissions</h3>
-                <p>Citizens can only view their data. No diagnoses or prescriptions can be added or modified except by a certified treating physician.</p>
-            </div>
-            <div class="card">
-                <div class="card-icon"><i class="fa-solid fa-key"></i></div>
-                <h3>Extra Security Layer (2FA)</h3>
-                <p>Even with biometrics, we require a secondary password to ensure the highest level of confidentiality and prevent unauthorized access.</p>
-            </div>
-        </div>
-    </section>
+    <footer>
+        <a href="index.html" class="logo" aria-label="bioSafe home">
+            <img src="Icon.png" alt="bioSafe icon"><span>BioSafe</span>
+        </a>
+        <p>All rights reserved &copy; 2026.</p>
+    </footer>
 
-    <!-- Dashboard Preview -->
-    <section class="dashboard-preview" id="preview">
-        <h2 class="section-title">Browse Your Medical Record Easily</h2>
-        <p class="section-subtitle">A simple, secure user interface that shows you everything you need</p>
-        
-        <div class="dashboard-mockup">
-            <div class="dash-header">
-                <div style="display:flex; align-items:center; gap:10px; font-weight:bold;">
-                    <i class="fa-solid fa-shield-heart"></i> bioSafe
-                </div>
-                <div style="display:flex; align-items:center; gap:15px; font-size:14px;">
-                    <span>Welcome, Ahmed Mohamed</span>
-                    <i class="fa-solid fa-user-circle" style="font-size:24px;"></i>
-                </div>
-            </div>
-            <div class="dash-body">
-                <div class="dash-sidebar">
-                    <ul>
-                        <li class="active"><i class="fa-solid fa-file-medical"></i> Medical History</li>
-                        <li><i class="fa-solid fa-flask"></i> Lab Results</li>
-                        <li><i class="fa-solid fa-x-ray"></i> X-Rays</li>
-                        <li><i class="fa-solid fa-prescription"></i> Prescriptions</li>
-                    </ul>
-                </div>
-                <div class="dash-content">
-                    <h4>Recent Medical Visits</h4>
-                    <div class="record-item">
-                        <div class="record-info">
-                            <h5>Kasr Al Ainy Hospital (Public)</h5>
-                            <p>Dr. Mohamed Abdallah - Internal Medicine | Oct 15, 2023</p>
-                        </div>
-                        <div class="record-status">Completed</div>
-                    </div>
-                    <div class="record-item">
-                        <div class="record-info">
-                            <h5>Al Noor Specialized Clinic (Private)</h5>
-                            <p>Dr. Sara Ahmed - Dermatology | Nov 2, 2023</p>
-                        </div>
-                        <div class="record-status">Completed</div>
-                    </div>
-                    <div class="record-item">
-                        <div class="record-info">
-                            <h5>Al Salam International Hospital (Private)</h5>
-                            <p>Dr. Khaled Hassan - Orthopedics | Nov 10, 2023</p>
-                        </div>
-                        <div class="record-status">Under Review</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Login Modal -->
+    <!-- ============ LOGIN MODAL ============ -->
     <div class="modal-overlay" id="loginModal">
         <div class="modal-content">
-            <button class="close-modal" onclick="closeModal()"><i class="fa-solid fa-xmark"></i></button>
+            <button class="close-modal" id="closeModal"><i class="fa-solid fa-xmark"></i></button>
             <div class="modal-header">
-                <h3>Secure Login</h3>
-                <p>Please verify your identity to access your health record</p>
+                <h3>Welcome to bioSafe</h3>
+                <p>Choose how you want to sign in</p>
             </div>
 
-            <form onsubmit="event.preventDefault(); simulateLogin();">
-                <div class="input-group">
-                    <label>National ID</label>
-                    <input type="text" placeholder="Enter your National ID (14 digits)" required id="nationalId">
-                </div>
-
-                <div class="input-group">
-                    <label>Password</label>
-                    <input type="password" placeholder="Enter your password" required id="password">
-                </div>
-
-                <div class="divider">
-                    <span>Or use biometric verification</span>
-                </div>
-
-                <div class="biometrics-grid">
-                    <button type="button" class="bio-btn" title="Fingerprint" onclick="alert('Reading fingerprint...')"><i class="fa-solid fa-fingerprint"></i></button>
-                    <button type="button" class="bio-btn" title="Face ID" onclick="alert('Scanning Face ID...')"><i class="fa-solid fa-face-smile"></i></button>
-                    <button type="button" class="bio-btn" title="Iris Scan" onclick="alert('Scanning Iris...')"><i class="fa-solid fa-eye"></i></button>
-                </div>
-
-                <button type="submit" class="btn-submit">
-                    <i class="fa-solid fa-right-to-bracket"></i> Log In
+            <div class="role-grid">
+                <button class="role-card" onclick="goTo('user.html')">
+                    <i class="fa-solid fa-user"></i>
+                    Patient
+                    <small>View my health record</small>
                 </button>
-            </form>
+                <button class="role-card" onclick="goTo('doctor.html')">
+                    <i class="fa-solid fa-user-doctor"></i>
+                    Doctor
+                    <small>Manage patient records</small>
+                </button>
+            </div>
+
+            <button class="role-card" style="width:100%;flex-direction:row;justify-content:center;" onclick="goTo('admin.html')">
+                <i class="fa-solid fa-user-shield"></i> Admin — Manage System
+            </button>
         </div>
     </div>
 
-    <!-- Footer -->
-    <footer>
-        <div class="logo" style="font-size:24px;">
-            <i class="fa-solid fa-shield-heart"></i> <span>BioSafe</span>
-        </div>
-        <p>Unified Secure Health Record Platform. All rights reserved &copy; 2026.</p>
-        <p style="font-size: 14px; opacity: 0.6;">Designed to reflect the highest standards of privacy and security for citizens.</p>
-    </footer>
-
     <script>
         const modal = document.getElementById('loginModal');
+        function openModal()  { modal.style.display = 'flex'; }
+        function closeModal() { modal.style.display = 'none'; }
+        function goTo(page)   { window.location.href = page; }
 
-        function openModal() {
-            modal.style.display = 'flex';
-            document.body.style.overflow = 'hidden';
-        }
-
-        function closeModal() {
-            modal.style.display = 'none';
-            document.body.style.overflow = 'auto';
-        }
-
-        // Close modal when clicking outside
-        window.onclick = function(event) {
-            if (event.target == modal) {
-                closeModal();
-            }
-        }
-
-        // Simulate Login Process
-        function simulateLogin() {
-            const btn = document.querySelector('.btn-submit');
-            const originalText = btn.innerHTML;
-            
-            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Verifying...';
-            btn.style.opacity = '0.8';
-
-            setTimeout(() => {
-                btn.innerHTML = '<i class="fa-solid fa-check"></i> Verified Successfully';
-                btn.style.background = 'var(--secondary)';
-                
-                setTimeout(() => {
-                    alert("Welcome to bioSafe! (This is a UI simulation. It will be connected to the Ministry of Health database in production.)");
-                    closeModal();
-                    // Reset button
-                    btn.innerHTML = originalText;
-                    btn.style.background = '';
-                    btn.style.opacity = '1';
-                    document.getElementById('nationalId').value = '';
-                    document.getElementById('password').value = '';
-                }, 1000);
-
-            }, 1500);
-        }
+        document.getElementById('openLoginBtn').addEventListener('click', openModal);
+        document.getElementById('heroLoginBtn').addEventListener('click', openModal);
+        document.getElementById('closeModal').addEventListener('click', closeModal);
+        modal.addEventListener('click', e => { if (e.target === modal) closeModal(); });
+        document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
     </script>
 </body>
 </html>

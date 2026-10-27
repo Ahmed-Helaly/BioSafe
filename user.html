@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>bioSafe | My Health Record</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .page-wrap { max-width: 1000px; margin: 2rem auto 4rem; padding: 0 1.5rem; }
+        .login-card {
+            background: var(--white); border-radius: var(--radius-lg); padding: 2.5rem 2rem;
+            box-shadow: var(--shadow-lg); max-width: 420px; margin: 3rem auto; border: 1px solid var(--border);
+        }
+        .dashboard { display: none; }
+        .dashboard.active { display: block; animation: fadeUp .4s ease; }
+        .profile-card {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: #fff; border-radius: var(--radius-lg); padding: 2rem; margin-bottom: 2rem;
+            box-shadow: var(--shadow-md);
+        }
+        .profile-card h2 { font-size: 1.6rem; margin-bottom: .3rem; }
+        .profile-card .meta { display: flex; gap: 1.5rem; flex-wrap: wrap; margin-top: 1rem; font-size: .9rem; opacity: .92; }
+        .profile-card .meta span i { margin-right: .35rem; }
+        .section-title { font-size: 1.3rem; font-weight: 800; color: var(--primary); margin-bottom: 1rem; }
+        .record-card {
+            background: var(--white); border-radius: var(--radius); padding: 1.4rem 1.6rem;
+            box-shadow: var(--shadow-sm); border: 1px solid var(--border); margin-bottom: 1rem;
+            border-left: 4px solid var(--secondary);
+        }
+        .record-card .record-head { display: flex; justify-content: space-between; flex-wrap: wrap; gap: .5rem; margin-bottom: .6rem; }
+        .record-card .diagnosis { font-weight: 800; color: var(--primary); font-size: 1.05rem; }
+        .record-card .date { font-size: .82rem; color: var(--text-light); background: var(--bg-alt); padding: .2rem .7rem; border-radius: 50px; }
+        .record-card .field { font-size: .9rem; margin: .35rem 0; color: var(--text); }
+        .record-card .field strong { color: var(--primary); }
+        .record-card .doctor-line { font-size: .82rem; color: var(--text-light); margin-top: .6rem; padding-top: .6rem; border-top: 1px dashed var(--border); }
+        .empty { text-align: center; padding: 3rem 1rem; color: var(--text-light); }
+        .empty i { font-size: 3rem; margin-bottom: 1rem; opacity: .4; display: block; }
+        .logout-btn { background: var(--bg-alt); color: var(--primary); border: 1px solid var(--border); padding: .5rem 1.1rem; border-radius: 50px; font-family: inherit; font-weight: 700; cursor: pointer; font-size: .85rem; }
+        .logout-btn:hover { background: #fee2e2; color: #991b1b; border-color: #fecaca; }
+        .form-msg { margin-top: 1rem; padding: .8rem 1rem; border-radius: var(--radius); font-weight: 600; display: none; }
+        .form-msg.err { display: block; background: #fee2e2; color: #991b1b; }
+
+        /* Fingerprint button */
+        .btn-scan {
+            display: inline-flex; align-items: center; justify-content: center; gap: .5rem;
+            padding: .7rem 1.4rem; font-family: inherit; font-weight: 700; font-size: .9rem;
+            color: #fff; border: none; border-radius: var(--radius); cursor: pointer;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            transition: all .3s;
+        }
+        .btn-scan:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 6px 18px rgba(26,158,143,.3); }
+        .btn-scan:disabled { opacity: .6; cursor: not-allowed; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="nav-container">
+            <a href="index.html" class="logo"><img src="Icon.png" alt="bioSafe icon"><span>BioSafe</span></a>
+            <nav class="nav-links">
+                <button class="logout-btn" id="logoutBtn" style="display:none;" onclick="logout()"><i class="fa-solid fa-right-from-bracket"></i> Logout</button>
+                <a href="index.html" class="btn-login-nav"><i class="fa-solid fa-house"></i> Home</a>
+            </nav>
+        </div>
+    </header>
+
+    <div class="page-wrap">
+
+        <!-- Login view -->
+        <div id="loginView">
+            <div class="login-card">
+                <div style="text-align:center;margin-bottom:1.5rem;">
+                    <div style="width:70px;height:70px;margin:0 auto 1rem;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,var(--primary),var(--secondary));border-radius:50%;color:#fff;font-size:1.8rem;">
+                        <i class="fa-solid fa-fingerprint"></i>
+                    </div>
+                    <h3 style="font-size:1.4rem;font-weight:800;color:var(--primary);">Patient Login</h3>
+                    <p style="color:var(--text-light);font-size:.88rem;">Access your unified medical history</p>
+                </div>
+                <form id="loginForm">
+                    <div class="input-group">
+                        <label for="nationalId">National ID</label>
+                        <input type="text" id="nationalId" pattern="\d{14}" maxlength="14" required placeholder="14-digit ID">
+                    </div>
+                    <div class="input-group">
+                        <label for="password">Password</label>
+                        <input type="password" id="password" minlength="6" required placeholder="Your password">
+                    </div>
+                    <button type="submit" class="btn-submit"><i class="fa-solid fa-right-to-bracket"></i> Log In</button>
+                    <div class="form-msg" id="loginMsg"></div>
+                </form>
+
+                <div class="divider"><span>or</span></div>
+
+                <button type="button" id="bioLoginBtn" class="btn-scan" style="width:100%;">
+                    <i class="fa-solid fa-fingerprint"></i> Login with Fingerprint
+                </button>
+                <div id="bioLoginMsg" style="font-size:.82rem;margin-top:.6rem;text-align:center;color:var(--text-light);"></div>
+            </div>
+        </div>
+
+        <!-- Dashboard view -->
+        <div class="dashboard" id="dashboardView">
+            <div class="profile-card">
+                <h2 id="profName">—</h2>
+                <div class="meta">
+                    <span><i class="fa-solid fa-id-card"></i> <span id="profId">—</span></span>
+                    <span><i class="fa-solid fa-droplet"></i> <span id="profBlood">—</span></span>
+                    <span><i class="fa-solid fa-cake-candles"></i> <span id="profDob">—</span></span>
+                    <span><i class="fa-solid fa-envelope"></i> <span id="profEmail">—</span></span>
+                </div>
+            </div>
+            <h3 class="section-title"><i class="fa-solid fa-notes-medical"></i> Medical History</h3>
+            <div id="historyList"></div>
+        </div>
+
+    </div>
+
+    <script src="biometric.js"></script>
+    <script>
+        const API = 'http://localhost:3000';
+
+        // Password login
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const msg = document.getElementById('loginMsg');
+            const body = {
+                nationalId: document.getElementById('nationalId').value.trim(),
+                password:   document.getElementById('password').value
+            };
+            try {
+                const res = await fetch(API + '/api/user/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(body)
+                });
+                const data = await res.json();
+                if (!res.ok) { msg.className = 'form-msg err'; msg.textContent = '❌ ' + (data.error || 'Login failed'); return; }
+                msg.className = 'form-msg'; msg.style.display = 'none';
+                showDashboard(data.user);
+            } catch (err) {
+                msg.className = 'form-msg err'; msg.textContent = '❌ Server unreachable';
+            }
+        });
+
+        // Fingerprint login
+        document.getElementById('bioLoginBtn').addEventListener('click', async () => {
+            const msgEl = document.getElementById('bioLoginMsg');
+            const btn = document.getElementById('bioLoginBtn');
+            btn.disabled = true;
+            msgEl.textContent = 'Waiting for fingerprint...';
+            msgEl.style.color = 'var(--secondary)';
+
+            let credId = BioAuth.recall('patient');
+            if (!credId) {
+                msgEl.textContent = 'No saved fingerprint on this device. Place finger to identify.';
+                const scan = await BioAuth.register({ kind: 'fingerprint' });
+                if (!scan.ok || !scan.credential) {
+                    btn.disabled = false;
+                    msgEl.textContent = '❌ Fingerprint scan failed';
+                    msgEl.style.color = '#991b1b';
+                    return;
+                }
+                credId = scan.credential.credentialId;
+            }
+
+            const verify = await BioAuth.authenticate({ credentialId: credId });
+            if (!verify.ok) {
+                btn.disabled = false;
+                msgEl.textContent = '❌ ' + (verify.error || 'Fingerprint not recognized');
+                msgEl.style.color = '#991b1b';
+                return;
+            }
+
+            try {
+                const res = await fetch(API + '/api/user/login-biometric', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ credentialId: verify.credentialId })
+                });
+                const data = await res.json();
+                if (!res.ok) {
+                    btn.disabled = false;
+                    msgEl.textContent = '❌ ' + (data.error || 'Login failed');
+                    msgEl.style.color = '#991b1b';
+                    return;
+                }
+                BioAuth.remember('patient', verify.credentialId);
+                showDashboard(data.user);
+            } catch (err) {
+                btn.disabled = false;
+                msgEl.textContent = '❌ Server unreachable';
+                msgEl.style.color = '#991b1b';
+            }
+        });
+
+        async function showDashboard(user) {
+            document.getElementById('loginView').style.display = 'none';
+            document.getElementById('dashboardView').classList.add('active');
+            document.getElementById('logoutBtn').style.display = 'inline-flex';
+
+            document.getElementById('profName').textContent  = user.fullName || '—';
+            document.getElementById('profId').textContent    = user.nationalId || '—';
+            document.getElementById('profBlood').textContent = user.bloodType || '—';
+            document.getElementById('profDob').textContent   = user.dateOfBirth || '—';
+            document.getElementById('profEmail').textContent = user.email || '—';
+
+            const list = document.getElementById('historyList');
+            list.innerHTML = '<p style="color:var(--text-light);">Loading records...</p>';
+
+            try {
+                const res = await fetch(API + '/api/user/history/' + user.nationalId);
+                const records = await res.json();
+                if (!records.length) {
+                    list.innerHTML = '<div class="empty"><i class="fa-solid fa-folder-open"></i>No medical records found yet.<br><small>Your doctor will add records after your visits.</small></div>';
+                    return;
+                }
+                list.innerHTML = records.map(r => `
+                    <div class="record-card">
+                        <div class="record-head">
+                            <span class="diagnosis">${escapeHtml(r.diagnosis)}</span>
+                            <span class="date">${formatDate(r.visitDate)}</span>
+                        </div>
+                        ${r.treatment  ? `<div class="field"><strong>Treatment:</strong> ${escapeHtml(r.treatment)}</div>` : ''}
+                        ${r.medications? `<div class="field"><strong>Medications:</strong> ${escapeHtml(r.medications)}</div>` : ''}
+                        ${r.notes      ? `<div class="field"><strong>Notes:</strong> ${escapeHtml(r.notes)}</div>` : ''}
+                        <div class="doctor-line"><i class="fa-solid fa-user-doctor"></i> ${escapeHtml(r.doctorName || 'Doctor')} ${r.hospital ? '— ' + escapeHtml(r.hospital) : ''}</div>
+                    </div>
+                `).join('');
+            } catch (err) {
+                list.innerHTML = '<p style="color:#991b1b;">Could not load history.</p>';
+            }
+        }
+
+        function formatDate(d) {
+            if (!d) return '—';
+            return new Date(d).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
+        }
+        function escapeHtml(s) {
+            return String(s || '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+        }
+        function logout() { location.reload(); }
+    </script>
+</body>
+</html>
